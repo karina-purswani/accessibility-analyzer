@@ -5,23 +5,36 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState(null);
 
-  // this will call backend later
+  // REAL BACKEND INTEGRATION
   const handleScan = async () => {
     setLoading(true);
     setResults(null);
 
-    // Placeholder until backend is ready
-    setTimeout(() => {
-      setResults({
-        message: "Scan completed successfully (demo placeholder)",
-        urlEntered: url,
+    try {
+      const response = await fetch("http://localhost:5000/scan", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ url }),
       });
-      setLoading(false);
-    }, 1200);
+
+      const data = await response.json();
+      setResults(data);
+
+    } catch (err) {
+      setResults({
+        error:
+          "Scan failed. Please check the URL or make sure the backend server is running.",
+      });
+    }
+
+    setLoading(false);
   };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center py-12 px-4">
+      
       {/* HEADER */}
       <h1 className="text-4xl font-bold text-blue-700 mb-6">
         Accessibility Analyzer
@@ -59,7 +72,7 @@ export default function App() {
             Scan Results
           </h2>
 
-          <pre className="bg-gray-200 p-4 rounded-lg text-sm overflow-x-auto">
+          <pre className="bg-gray-200 p-4 rounded-lg text-sm overflow-x-auto whitespace-pre-wrap">
             {JSON.stringify(results, null, 2)}
           </pre>
         </div>

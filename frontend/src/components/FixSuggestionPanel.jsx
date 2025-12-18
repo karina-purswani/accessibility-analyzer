@@ -4,27 +4,45 @@ import { Sparkles, Loader2, Copy } from "lucide-react";
 export default function FixSuggestionPanel({ violation }) {
   const [loading, setLoading] = useState(false);
   const [fix, setFix] = useState(null);
+  const [error, setError] = useState(null);
 
   const handleGetFix = async () => {
     setLoading(true);
     setFix(null);
+    setError(null);
 
-    // TEMP mock — backend AI will replace this
-    setTimeout(() => {
-      setFix({
-        explanation:
-          "Images without alt text cannot be read by screen readers.",
-        solution:
-          '<img src="logo.png" alt="Company logo describing the image" />',
-      });
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/ai-fix`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ruleId: violation.id,
+            description: violation.description,
+            html: violation.nodes?.[0]?.html || "",
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to generate fix");
+      }
+
+      setFix(data.fix);
+    } catch (err) {
+      setError("Unable to generate fix at the moment.");
+    } finally {
       setLoading(false);
-    }, 1200);
+    }
   };
 
   return (
-    <div className="mt-6 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-5">
+    <div className="mt-6 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-6">
       {/* HEADER */}
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           <h4 className="font-semibold text-gray-800 dark:text-gray-100">
@@ -53,37 +71,58 @@ export default function FixSuggestionPanel({ violation }) {
         </button>
       </div>
 
-      {/* BODY */}
-      {!fix && !loading && (
+      {/* EMPTY STATE */}
+      {!fix && !loading && !error && (
         <p className="text-sm text-gray-600 dark:text-gray-400">
-          Click <strong>Get AI Fix</strong> to receive an AI-generated fix
-          suggestion for this issue.
+          Click <strong>Get AI Fix</strong> to see a suggested accessibility
+          improvement for this issue.
         </p>
       )}
 
+      {/* ERROR */}
+      {error && (
+        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+      )}
+
+      {/* BEFORE vs AFTER */}
       {fix && (
-        <div className="space-y-4">
-          <p className="text-sm text-gray-700 dark:text-gray-300">
-            <strong>Why this matters:</strong> {fix.explanation}
-          </p>
+        <>
+          <div className="grid md:grid-cols-2 gap-6 mt-5">
+            {/* BEFORE */}
+            <div>
+              <p className="text-xs font-semibold mb-2 text-gray-500 uppercase">
+                Before
+              </p>
+              <pre className="bg-red-50 dark:bg-red-900/20 p-4 rounded-xl text-sm overflow-x-auto border border-red-200 dark:border-red-700">
+                {violation.nodes?.[0]?.html || "N/A"}
+              </pre>
+            </div>
 
-          <div className="relative">
-            <pre className="bg-gray-200 dark:bg-gray-800 p-3 rounded-lg text-sm overflow-x-auto">
-              {fix.solution}
-            </pre>
+            {/* AFTER */}
+            <div>
+              <p className="text-xs font-semibold mb-2 text-gray-500 uppercase">
+                After (Suggested)
+              </p>
+              <div className="relative">
+                <pre className="bg-green-50 dark:bg-green-900/20 p-4 rounded-xl text-sm overflow-x-auto border border-green-200 dark:border-green-700">
+                  {fix}
+                </pre>
 
-            <button
-              onClick={() => navigator.clipboard.writeText(fix.solution)}
-              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
-            >
-              <Copy className="w-4 h-4" />
-            </button>
+                <button
+                  onClick={() => navigator.clipboard.writeText(fix)}
+                  className="absolute top-3 right-3 text-gray-600 hover:text-gray-900 dark:text-gray-400"
+                  title="Copy suggested fix"
+                >
+                  <Copy className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
           </div>
 
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            ⚠ AI-generated suggestion — review before applying.
+          <p className="mt-4 text-xs text-gray-500 dark:text-gray-400">
+            ⚠ Suggested fix is AI-generated — please review before applying.
           </p>
-        </div>
+        </>
       )}
     </div>
   );

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import { ChevronDown, ChevronUp, AlertTriangle } from "lucide-react";
 import FixSuggestionPanel from "./FixSuggestionPanel";
 
@@ -8,9 +8,8 @@ export default function ViolationsTable({ violations }) {
   if (!violations || violations.length === 0) {
     return (
       <div className="text-center p-10 text-gray-500 dark:text-gray-400">
-  🎉 No accessibility issues detected. Great job!
-</div>
-
+        🎉 No accessibility issues detected. Great job!
+      </div>
     );
   }
 
@@ -34,9 +33,11 @@ export default function ViolationsTable({ violations }) {
         {/* TABLE BODY */}
         <tbody>
           {violations.map((v, index) => (
-            <>
+            /* ✅ FIX: Used <Fragment> with a key instead of <>. 
+               The 'key' must always be on the outermost element returned by map().
+            */
+            <Fragment key={v.id || index}>
               <tr
-                key={v.id || index}
                 className="border-t odd:bg-white even:bg-gray-50 dark:odd:bg-gray-900 dark:even:bg-gray-800 hover:bg-blue-50 dark:hover:bg-gray-700 transition"
               >
                 {/* RULE */}
@@ -102,7 +103,7 @@ export default function ViolationsTable({ violations }) {
                   </td>
                 </tr>
               )}
-            </>
+            </Fragment>
           ))}
         </tbody>
       </table>

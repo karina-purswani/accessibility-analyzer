@@ -108,8 +108,8 @@ npm run dev
 
 We welcome contributions!
 
-* **Frontend UI:** [Your Name]
-* **Backend & AI Logic:** [Teammate Name]
+* **Frontend UI, AI Logic and Visual Inspector Preview:** [Saburi Yeola]
+* **Backend, Scan History, Report Exports and Demo Page:** [Karina Purswani]
 
 If you'd like to improve the scoring algorithm or add new export formats, feel free to fork and submit a PR!
 
@@ -118,6 +118,7 @@ If you'd like to improve the scoring algorithm or add new export formats, feel f
 <p align="center">
 Made with ❤️ and ☕ by Developers, for Developers.
 </p>
+
 
 
 

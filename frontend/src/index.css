@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* -----------------------------
-   GLOBAL RESET & TYPOGRAPHY
+    GLOBAL RESET & TYPOGRAPHY
 ------------------------------ */
 
 :root {
@@ -19,43 +19,18 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100%;
-  background-color: #f9fafb; /* premium soft gray */
-  color: #111827; /* neutral dark */
+  background-color: #f8fafc; /* Premium Slate Gray */
+  color: #0f172a; 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
 }
 
 /* -----------------------------
-   SMOOTH INTERACTIONS
+    PREMIUM SCROLLBAR SYSTEM
 ------------------------------ */
 
-* {
-  box-sizing: border-box;
-}
-
-button,
-input,
-select,
-textarea {
-  transition: all 0.2s ease-in-out;
-}
-
-/* -----------------------------
-   PREMIUM FOCUS STATES
------------------------------- */
-
-input:focus,
-select:focus,
-textarea:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-}
-
-/* -----------------------------
-   CLEAN SCROLLBAR (OPTIONAL)
------------------------------- */
-
+/* Global Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -66,16 +41,67 @@ textarea:focus {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.15);
+  background-color: rgba(0, 0, 0, 0.1);
   border-radius: 9999px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(0, 0, 0, 0.25);
+/* Custom Premium Scrollbar for Logs & Inspector */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #3b82f6; /* Premium Blue */
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 /* -----------------------------
-   TABLE POLISH
+    SMOOTH INTERACTIONS
+------------------------------ */
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select,
+textarea {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* -----------------------------
+    PREMIUM FOCUS STATES
+------------------------------ */
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+/* -----------------------------
+    UTILITY IMPROVEMENTS
+------------------------------ */
+
+.shadow-soft {
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04), 0 4px 15px -5px rgba(0, 0, 0, 0.02);
+}
+
+.card {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+/* -----------------------------
+    TABLE & LIST POLISH
 ------------------------------ */
 
 table {
@@ -85,25 +111,21 @@ table {
 
 th {
   font-weight: 600;
-  color: #374151;
-}
-
-td {
-  color: #1f2937;
+  color: #475569; /* Slate-600 */
 }
 
 /* -----------------------------
-   SUBTLE ANIMATIONS
+    SUBTLE ANIMATIONS
 ------------------------------ */
 
 .fade-in {
-  animation: fadeIn 0.4s ease-in-out both;
+  animation: fadeIn 0.4s ease-out both;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -112,28 +134,14 @@ td {
 }
 
 /* -----------------------------
-   LINK POLISH
+    PRINT OPTIMIZATION
 ------------------------------ */
 
-a {
-  color: #2563eb;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-/* -----------------------------
-   UTILITY IMPROVEMENTS
------------------------------- */
-
-.shadow-soft {
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-}
-
-.card {
-  background: white;
-  border-radius: 1rem;
-  padding: 1.5rem;
+@media print {
+  body {
+    background: white;
+  }
+  .no-print {
+    display: none !important;
+  }
 }

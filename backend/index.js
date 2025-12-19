@@ -7,7 +7,6 @@ import aiFixRoutes from "./routes/aiFix.js";
 
 /**
  * 🔑 Load environment variables
- * Explicit path ensures backend/.env is used
  */
 dotenv.config({ path: "./.env" });
 
@@ -15,7 +14,6 @@ dotenv.config({ path: "./.env" });
 import admin from "firebase-admin";
 import { createRequire } from "module"; 
 
-// Create 'require' to load the JSON file
 const require = createRequire(import.meta.url);
 const serviceAccount = require("./serviceAccountKey.json"); 
 
@@ -74,7 +72,6 @@ app.get("/", (req, res) => {
 
 // ---------- SCAN ROUTE ----------
 app.post("/scan", async (req, res) => {
-  // Accept userId and userEmail along with url
   const { url, userId, userEmail } = req.body;
 
   if (!url) return res.status(400).json({ success: false, error: "URL is required" });
@@ -83,6 +80,7 @@ app.post("/scan", async (req, res) => {
   console.log(`🔍 Scanning URL: ${url}`);
 
   try {
+    // results now contains { ...axeResults, screenshot: "data:..." }
     const results = await runAxeScan(url);
     const summary = buildSummary(results);
 
@@ -94,24 +92,23 @@ app.post("/scan", async (req, res) => {
       try {
         const timestamp = admin.firestore.FieldValue.serverTimestamp();
 
-        // A. Update User Document
         await db.collection("users").doc(userId).set({
           email: userEmail,
           lastScanAt: timestamp
         }, { merge: true });
 
-        // B. Add New Scan Document
-        const scanRef = await db.collection("users").doc(userId).collection("scans").add({
+        await db.collection("users").doc(userId).collection("scans").add({
           url: url,
           summary: {
             ...summary,
             passes: results.passes ? results.passes.length : 0,
             incomplete: results.incomplete ? results.incomplete.length : 0
           },
+          // We don't save the screenshot to Firestore yet to avoid storage costs
           createdAt: timestamp
         });
 
-        console.log(`✅ Scan saved to Firestore! ID: ${scanRef.id}`);
+        console.log(`✅ Scan saved to Firestore!`);
       } catch (dbErr) {
         console.error("❌ Database Save Failed:", dbErr.message);
       }
@@ -120,11 +117,11 @@ app.post("/scan", async (req, res) => {
       console.log("⚠️ No User ID provided (Demo Mode). Skipping DB save.");
     }
 
-    // Return results to frontend regardless of DB save status
+    // Return the full results object which includes results.screenshot
     return res.json({
       success: true,
       summary,
-      data: results
+      data: results 
     });
 
   } catch (err) {
@@ -136,10 +133,8 @@ app.post("/scan", async (req, res) => {
   }
 });
 
-// ---------- AI FIX ROUTE ----------
 app.use("/api/ai-fix", aiFixRoutes);
 
-// ---------- SERVER ----------
 app.listen(5000, () => {
   console.log("🚀 Server started on http://localhost:5000");
 });

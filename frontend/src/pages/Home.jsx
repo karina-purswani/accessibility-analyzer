@@ -17,6 +17,11 @@ export default function Home() {
     }
   };
 
+  // 🔹 View Demo handler
+  const handleViewDemo = () => {
+    navigate("/demo");
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-blue-50 via-white to-white">
       {/* HERO SECTION */}
@@ -48,20 +53,20 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
-          className="mt-12 flex gap-6"
+          className="mt-12 flex flex-col sm:flex-row gap-6"
         >
           {/* GET STARTED */}
           <button
             onClick={handleGetStarted}
-            className="px-8 py-4 rounded-2xl bg-blue-600 text-white text-lg font-semibold shadow-lg hover:bg-blue-700 hover:shadow-xl transition"
+            className="px-8 py-4 rounded-2xl bg-blue-600 text-white text-lg font-semibold shadow-lg hover:bg-blue-700 hover:shadow-xl transition transform hover:-translate-y-1"
           >
             Get Started
           </button>
 
-          {/* VIEW DEMO (INTENTIONALLY INACTIVE FOR NOW) */}
+          {/* VIEW DEMO (ACTIVATED) */}
           <button
-            disabled
-            className="px-8 py-4 rounded-2xl bg-white text-gray-400 text-lg font-semibold border border-gray-300 cursor-not-allowed"
+            onClick={handleViewDemo}
+            className="px-8 py-4 rounded-2xl bg-white text-blue-600 text-lg font-semibold border-2 border-blue-100 shadow-sm hover:border-blue-200 hover:bg-blue-50 transition transform hover:-translate-y-1"
           >
             View Demo
           </button>
@@ -95,13 +100,13 @@ export default function Home() {
         </h2>
 
         <div className="mt-14 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-lg text-gray-600">
-          <div className="bg-white p-6 rounded-2xl shadow-soft">
+          <div className="bg-white p-6 rounded-2xl shadow-soft border border-gray-100">
             🔗 Enter website URL
           </div>
-          <div className="bg-white p-6 rounded-2xl shadow-soft">
+          <div className="bg-white p-6 rounded-2xl shadow-soft border border-gray-100">
             ⚙️ Run accessibility scan
           </div>
-          <div className="bg-white p-6 rounded-2xl shadow-soft">
+          <div className="bg-white p-6 rounded-2xl shadow-soft border border-gray-100">
             📊 Review results & fixes
           </div>
         </div>

@@ -17,11 +17,7 @@ import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const serviceAccount = require("./serviceAccountKey.json"); 
 
-console.log("-----------------------------------------");
-console.log("🔑 LOADED KEY FOR PROJECT:", serviceAccount.project_id);
-console.log("📧 SERVICE EMAIL:", serviceAccount.client_email);
-console.log("-----------------------------------------");
-
+// Initialize Firebase (Only once)
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
@@ -29,6 +25,8 @@ if (!admin.apps.length) {
 }
 
 const db = admin.firestore();
+
+// 🚨 CRITICAL: Connect to your specific named database
 db.settings({ databaseId: "accessibility-db" }); 
 
 const app = express();
@@ -86,7 +84,8 @@ app.post("/scan", async (req, res) => {
     const results = await runAxeScan(url);
     const summary = buildSummary(results);
 
-    // 2️⃣ SAVE TO FIRESTORE
+    // 2️⃣ SAVE TO FIRESTORE (Backend Logic)
+    // Only save if a User ID is present.
     if (userId) {
       console.log(`📝 Saving scan for user: ${userEmail}`);
       
@@ -113,6 +112,9 @@ app.post("/scan", async (req, res) => {
       } catch (dbErr) {
         console.error("❌ Database Save Failed:", dbErr.message);
       }
+    } else {
+      // 🟢 DEMO MODE: Logic hits here when userId is null
+      console.log("⚠️ No User ID provided (Demo Mode). Skipping DB save.");
     }
 
     // Return the full results object which includes results.screenshot

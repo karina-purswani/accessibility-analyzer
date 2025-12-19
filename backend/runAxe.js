@@ -6,45 +6,65 @@ export async function runAxeScan(url) {
 
   try {
     browser = await puppeteer.launch({
-      headless: true,
+      headless: "new", // Updated for modern Puppeteer
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
       timeout: 30000
     });
 
     const page = await browser.newPage();
+    
+    // Set a consistent viewport size so coordinates match the screenshot
+    await page.setViewport({ width: 1280, height: 800 });
 
-    // ⏱ Global timeouts (VERY IMPORTANT)
     page.setDefaultNavigationTimeout(30000);
     page.setDefaultTimeout(30000);
 
-    await page.goto(url, {
-      waitUntil: "networkidle2"
-    });
+    await page.goto(url, { waitUntil: "networkidle2" });
 
-    // Inject axe-core
+    // 1. Capture Screenshot as Base64 (to avoid saving files for now)
+    const screenshot = await page.screenshot({ encoding: "base64", fullPage: false });
+
+    // 2. Inject axe-core
     await page.evaluate(axeCore.source);
 
-    // Run axe
+    // 3. Run axe and extract coordinates
     const results = await page.evaluate(async () => {
-      return await axe.run();
+      const axeResults = await window.axe.run();
+      
+      // Attach bounding box data to each node
+      for (const violation of axeResults.violations) {
+        for (const node of violation.nodes) {
+          const element = document.querySelector(node.target[0]);
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            node.rect = {
+              top: rect.top,
+              left: rect.left,
+              width: rect.width,
+              height: rect.height,
+              windowWidth: window.innerWidth // Helps frontend handle scaling
+            };
+          }
+        }
+      }
+      return axeResults;
     });
 
-    return results;
+    // Return both the axe results and the visual context
+    return {
+      ...results,
+      screenshot: `data:image/png;base64,${screenshot}`,
+    };
 
   } catch (error) {
-    // Normalize common Puppeteer errors
     if (error.message.includes("Navigation timeout")) {
       throw new Error("Page took too long to load");
     }
-
     if (error.message.includes("net::")) {
-      throw new Error("Failed to load the website");
+      throw new Error("Failed to load the website (check the URL)");
     }
-
     throw error;
-
   } finally {
-    // 🧹 Always clean up browser
     if (browser) {
       await browser.close();
     }

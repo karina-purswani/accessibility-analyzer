@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Analyze from "./pages/Analyze";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ScanHistory from "./pages/ScanHistory";
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/history" element={<ScanHistory />} />
           <Route
             path="/analyze"
             element={

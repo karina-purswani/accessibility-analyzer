@@ -3,7 +3,7 @@
 > **Make the web inclusive for everyone.**
 > A powerful, full-stack tool that scans websites for WCAG 2.1 accessibility violations, generates actionable AI-powered fixes, and provides professional audit reports.
 
-<img src="./screenshots/dashboard-preview.png" alt="Dashboard Preview" width="100%" />
+<img src="./Screenshots/dashboard-preview.png" alt="Dashboard Preview" width="100%" />
 
 ---
 
@@ -25,25 +25,25 @@ Web accessibility isn't just a legal requirement—it's a moral imperative. But 
 
 Get a bird's-eye view of your website's accessibility health. We calculate a custom **Health Score (0-100)** based on the severity of violations found.
 
-<img src="./screenshots/analysis-grid.png" alt="Analysis Grid" />
+<img src="./Screenshots/analysis-grid.png" alt="Analysis Grid" />
 
-### 2. Detailed Violations & AI Fixes
+### 2. Detailed Violations , AI Fixes & Visual Inspector Preview
 
 Dive deep into every issue. Our tool pinpoints the exact HTML element causing the problem and suggests code fixes.
 
-<img src="./screenshots/violations-table.png" alt="Violations and Fixes" />
+<img src="./Screenshots/violations-table-vi-preview.png" alt="Violations and Fixes" />
 
 ### 3. Smart Scan History
 
 Never lose track of your progress. Logged-in users can revisit past scans, compare improvements over time, and re-download old reports.
 
-<img src="./screenshots/scan-history.png" alt="Scan History" />
+<img src="./Screenshots/scan-history.png" alt="Scan History" />
 
 ### 4. Professional Export Suite
 
 Need to show your boss or client? Export a white-labeled, print-ready **PDF Report**, or grab the raw data in **JSON/CSV** formats.
 
-<img src="./screenshots/pdf-report.png" alt="Export Options" />
+<img src="./Screenshots/pdf-report.png" alt="Export Options" />
 
 ### 5. "Try Before You Sign Up" Demo Mode
 
@@ -108,8 +108,8 @@ npm run dev
 
 We welcome contributions!
 
-* **Frontend UI:** [Your Name]
-* **Backend & AI Logic:** [Teammate Name]
+* **Frontend UI, AI Logic and Visual Inspector Preview:** [Saburi Yeola]
+* **Backend, Scan History, Report Exports and Demo Page:** [Karina Purswani]
 
 If you'd like to improve the scoring algorithm or add new export formats, feel free to fork and submit a PR!
 
@@ -118,5 +118,8 @@ If you'd like to improve the scoring algorithm or add new export formats, feel f
 <p align="center">
 Made with ❤️ and ☕ by Developers, for Developers.
 </p>
+
+
+
 
 

@@ -1,4 +1,3 @@
-```markdown
 # ♿ Accessibility Analyzer
 
 > **Make the web inclusive for everyone.**
@@ -51,7 +50,6 @@ Need to show your boss or client? Export a white-labeled, print-ready **PDF Repo
 New users can run a **One-Time Free Scan** without creating an account. We use local storage to provide a seamless trial experience before asking for sign-up.
 
 ---
-
 ## 🔮 Future Scope (Roadmap)
 
 We are constantly working to improve Accessibility Analyzer. Planned features for v2.0 include:
@@ -62,7 +60,6 @@ We are constantly working to improve Accessibility Analyzer. Planned features fo
 * **🧩 CI/CD Integration:** A GitHub Action to block deploys if accessibility score drops below a threshold.
 
 ---
-
 ## 🛠️ Tech Stack
 
 * **Frontend:** React (Vite), Tailwind CSS, Framer Motion (Animations), Recharts (Data Viz).
@@ -86,13 +83,13 @@ This project uses a split structure: `frontend` and `backend`.
 
 1. **Clone the repo**
 ```bash
-git clone [https://github.com/karina-purswani/accessibility-analyzer.git](https://github.com/karina-purswani/accessibility-analyzer.git)
+git clone https://github.com/karina-purswani/accessibility-analyzer.git
 cd accessibility-analyzer
 
 ```
 
-2. **Setup Backend**
 
+2. **Setup Backend**
 ```bash
 cd backend
 npm install
@@ -102,8 +99,8 @@ npm run dev
 
 ```
 
-3. **Setup Frontend** (Open a new terminal)
 
+3. **Setup Frontend** (Open a new terminal)
 ```bash
 cd frontend
 npm install
@@ -111,6 +108,8 @@ npm install
 npm run dev
 
 ```
+
+
 
 ---
 
@@ -129,6 +128,8 @@ If you'd like to improve the scoring algorithm or add new export formats, feel f
 Made with ❤️ and ☕ by Developers, for Developers.
 </p>
 
-```
 
-```
+
+
+
+

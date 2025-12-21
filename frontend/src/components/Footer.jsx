@@ -35,7 +35,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 hover:text-white transition-colors"
               >
-                <Github className="w-4 h-4" /> GitHub Profile
+                <Github className="w-4 h-4" /> GitHub Repository
               </a>
             </li>
             <li>

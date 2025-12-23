@@ -38,6 +38,13 @@ export default function Login() {
   // 🔹 Email Login OR Signup (explicit)
   const handleEmailAuth = async () => {
     setError(null);
+
+    // 🛑 1. BASIC VALIDATION (The Fix for the LinkedIn Feedback)
+    if (!email || !password) {
+      setError("Please fill in both email and password.");
+      return; // Stop here, don't talk to Firebase
+    }
+
     setLoading(true);
 
     try {
@@ -54,20 +61,30 @@ export default function Login() {
       console.error(err);
 
       // 🔴 FRIENDLY ERROR MESSAGES
-      if (err.code === "auth/user-not-found") {
-        setError("Account does not exist. Please sign up first.");
+      if (err.code === "auth/user-not-found" || err.code === "auth/invalid-credential") {
+        setError("Account not found. Please sign up or check your details.");
       } else if (err.code === "auth/wrong-password") {
         setError("Incorrect password. Please try again.");
       } else if (err.code === "auth/email-already-in-use") {
         setError("Account already exists. Please log in.");
       } else if (err.code === "auth/weak-password") {
         setError("Password should be at least 6 characters.");
+      } else if (err.code === "auth/invalid-email") {
+        setError("Please enter a valid email address.");
       } else {
         setError("Authentication failed. Please try again.");
       }
     } finally {
       setLoading(false);
     }
+  };
+
+  // Helper to toggle mode and clear errors
+  const toggleMode = (mode) => {
+    setIsSignup(mode);
+    setError(null); // Clear errors when switching forms
+    setEmail("");   // Optional: Clear inputs if you want a fresh start
+    setPassword("");
   };
 
   return (
@@ -102,7 +119,10 @@ export default function Login() {
           type="email"
           placeholder="Email address"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if(error) setError(null); // Clear error as user types
+          }}
           className="w-full mb-4 px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
@@ -111,15 +131,22 @@ export default function Login() {
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            if(error) setError(null); // Clear error as user types
+          }}
           className="w-full mb-4 px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
         {/* SUBMIT */}
         <button
           onClick={handleEmailAuth}
-          disabled={loading || !email || !password}
-          className="w-full py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
+          disabled={loading} // Only disable if loading, NOT if fields are empty (so we can show error)
+          className={`w-full py-3 rounded-xl font-semibold transition ${
+            loading 
+              ? "bg-blue-400 cursor-not-allowed" 
+              : "bg-blue-600 hover:bg-blue-700"
+          } text-white`}
         >
           {loading
             ? "Please wait..."
@@ -130,8 +157,8 @@ export default function Login() {
 
         {/* ERROR */}
         {error && (
-          <p className="mt-4 text-sm text-red-600 text-center">
-            {error}
+          <p className="mt-4 text-sm text-red-600 text-center bg-red-50 py-2 rounded-lg border border-red-100">
+            ⚠️ {error}
           </p>
         )}
 
@@ -141,7 +168,7 @@ export default function Login() {
             <>
               Already have an account?{" "}
               <button
-                onClick={() => setIsSignup(false)}
+                onClick={() => toggleMode(false)}
                 className="text-blue-600 font-semibold hover:underline"
               >
                 Log in
@@ -151,7 +178,7 @@ export default function Login() {
             <>
               Don’t have an account?{" "}
               <button
-                onClick={() => setIsSignup(true)}
+                onClick={() => toggleMode(true)}
                 className="text-blue-600 font-semibold hover:underline"
               >
                 Sign up
